@@ -11,11 +11,6 @@ func SetupRoutes() {
 }
 
 /*
-user: username, password, items, coins
-item: name, description, price, level, quantity
-
-ENDPOINTS:
-
 POST /user - create user
 POST /item - create item and add it to user (jwt)
 POST /items/:id/sell - sell item

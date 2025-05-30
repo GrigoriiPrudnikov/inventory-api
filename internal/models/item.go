@@ -1,10 +1,13 @@
 package models
 
+import "gorm.io/gorm"
+
 type Item struct {
-	ID          int    `json:"id"`
+	gorm.Model
+	ID          int64  `json:"id"`
 	Name        string `json:"name"`
 	Description string `json:"description"`
-	Level       int    `json:"level"`
-	Price       int    `json:"price"`
-	OwnerID     int    `json:"owner_id"`
+	Level       int8   `json:"level"`
+	Price       int8   `json:"price"`
+	OwnerID     int64  `json:"owner_id"`
 }

@@ -1,7 +1,6 @@
 package db
 
 import (
-	"database/sql"
 	"inventory-api/config"
 	"inventory-api/internal/models"
 	"log"
@@ -10,7 +9,7 @@ import (
 	"gorm.io/gorm"
 )
 
-var DB *sql.DB
+var DB *gorm.DB
 
 func Init(cfg config.Config) {
 	db, err := gorm.Open(postgres.Open(cfg.DatabaseURL), &gorm.Config{})
@@ -23,15 +22,14 @@ func Init(cfg config.Config) {
 		log.Fatal("failed to auto migrate database")
 	}
 
-	postgresDB, err := db.DB()
+	connection, err := db.DB()
 	if err != nil {
-		log.Fatalf("failed to get generic database object: %v", err)
+		log.Fatalf("failed to get database connection: %v", err)
 	}
-
-	if err = postgresDB.Ping(); err != nil {
+	if err = connection.Ping(); err != nil {
 		log.Fatalf("database ping failed: %v", err)
 	}
 	log.Println("Database connection successful.")
 
-	DB = postgresDB
+	DB = db
 }

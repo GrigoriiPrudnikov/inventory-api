@@ -4,9 +4,14 @@ import "github.com/gin-gonic/gin"
 
 func SetupRoutes() {
 	r := gin.Default()
+
 	r.GET("/", func(c *gin.Context) {
 		c.JSON(200, "Hello World!")
 	})
+
+	r.GET("/users", GetUsers)
+	r.GET("/users/:id", GetUser)
+
 	r.Run(":8080")
 }
 

@@ -12,6 +12,9 @@ func SetupRoutes() {
 	r.GET("/users", GetUsers)
 	r.GET("/users/:id", GetUser)
 
+	r.GET("/items", GetItems)
+	r.GET("/items/:id", GetItem)
+
 	r.Run(":8080")
 }
 

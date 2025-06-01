@@ -6,6 +6,7 @@ import (
 	"inventory-api/internal/models"
 
 	"github.com/gin-gonic/gin"
+	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
 
@@ -27,8 +28,51 @@ func GetUser(c *gin.Context) {
 
 	if res.Error != nil && errors.Is(res.Error, gorm.ErrRecordNotFound) {
 		c.JSON(404, gin.H{
-			"user":  nil,
 			"error": "user not found",
+		})
+		return
+	}
+
+	c.JSON(200, gin.H{"user": user})
+}
+
+type CreateUserReq struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+}
+
+func CreateUser(c *gin.Context) {
+	database := db.DB
+
+	var req CreateUserReq
+	c.BindJSON(&req)
+
+	var found models.User
+	res := database.First(&found, "username = ?", req.Username)
+
+	if res.Error == nil {
+		c.JSON(409, gin.H{
+			"error": "user already exists",
+		})
+		return
+	}
+
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
+	if err != nil {
+		c.JSON(500, gin.H{
+			"error": "failed to hash password",
+		})
+		return
+	}
+
+	user := models.User{
+		Username: req.Username,
+		Password: string(hashedPassword),
+	}
+	res = database.Create(&user)
+	if res.Error != nil {
+		c.JSON(500, gin.H{
+			"error": "failed to create user: " + res.Error.Error(),
 		})
 		return
 	}

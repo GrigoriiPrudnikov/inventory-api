@@ -11,6 +11,7 @@ func SetupRoutes() {
 
 	r.GET("/users", GetUsers)
 	r.GET("/users/:id", GetUser)
+	r.POST("/users", CreateUser)
 
 	r.GET("/items", GetItems)
 	r.GET("/items/:id", GetItem)

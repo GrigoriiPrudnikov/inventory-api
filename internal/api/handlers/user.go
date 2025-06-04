@@ -10,13 +10,28 @@ import (
 	"gorm.io/gorm"
 )
 
+type UserResponse struct {
+	ID       uint   `json:"id"`
+	Username string `json:"username"`
+	Coins    uint64 `json:"coins"`
+}
+
 func GetUsers(c *gin.Context) {
 	database := db.DB
 
 	var users []models.User
 	database.Find(&users)
 
-	c.JSON(200, gin.H{"users": users})
+	var res []UserResponse
+	for _, user := range users {
+		res = append(res, UserResponse{
+			ID:       user.ID,
+			Username: user.Username,
+			Coins:    user.Coins,
+		})
+	}
+
+	c.JSON(200, gin.H{"users": res})
 }
 
 func GetUser(c *gin.Context) {

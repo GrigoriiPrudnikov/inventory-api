@@ -9,9 +9,9 @@ import (
 func SetupRoutes() {
 	r := gin.Default()
 
-	r.GET("/", func(c *gin.Context) {
-		c.JSON(200, "Hello World!")
-	})
+	r.GET("/", func(c *gin.Context) { c.JSON(200, "Hello World!") })
+
+	r.POST("/auth/login", handlers.Login)
 
 	r.GET("/users", handlers.GetUsers)
 	r.GET("/users/:id", handlers.GetUser)
@@ -23,8 +23,3 @@ func SetupRoutes() {
 
 	r.Run(":8080")
 }
-
-/*
-POST /item - create item and add it to user (jwt)
-POST /items/:id/sell - sell item
-*/

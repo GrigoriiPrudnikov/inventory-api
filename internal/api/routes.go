@@ -12,6 +12,7 @@ func SetupRoutes() {
 	r.GET("/", func(c *gin.Context) { c.JSON(200, "Hello World!") })
 
 	r.POST("/auth/login", handlers.Login)
+	r.POST("/auth/refresh", handlers.Refresh)
 
 	r.GET("/users", handlers.GetUsers)
 	r.GET("/users/:id", handlers.GetUser)

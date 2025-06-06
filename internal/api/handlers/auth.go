@@ -65,3 +65,47 @@ func Login(c *gin.Context) {
 		"refreshToken": refresh,
 	})
 }
+
+type RefreshReq struct {
+	RefreshToken string `json:"refresh_token"`
+}
+
+func Refresh(c *gin.Context) {
+	var req RefreshReq
+	c.BindJSON(&req)
+
+	if req.RefreshToken == "" {
+		c.JSON(400, gin.H{
+			"error": "no refresh token provided",
+		})
+		return
+	}
+
+	claims, err := utils.ParseToken(req.RefreshToken)
+	if err != nil {
+		c.JSON(401, gin.H{
+			"error": "invalid refresh token",
+		})
+		return
+	}
+
+	userID := claims.(*utils.CustomClaims).ID
+	username := claims.(*utils.CustomClaims).Username
+
+	token := utils.GenerateToken(jwt.MapClaims{
+		"id":       userID,
+		"username": username,
+		"exp":      time.Now().Add(time.Hour).Unix(),
+	})
+
+	if token == nil {
+		c.JSON(500, gin.H{
+			"error": "failed to sign token",
+		})
+		return
+	}
+
+	c.JSON(200, gin.H{
+		"token": token,
+	})
+}

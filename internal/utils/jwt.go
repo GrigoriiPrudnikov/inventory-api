@@ -3,6 +3,7 @@ package utils
 import (
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/golang-jwt/jwt/v5"
 )
@@ -20,9 +21,9 @@ func GenerateToken(payload jwt.Claims) *string {
 }
 
 type CustomClaims struct {
-	ID       int    `json:"id"`
+	ID       uint   `json:"id"`
 	Username string `json:"username"`
-	Exp      int    `json:"exp"`
+	Exp      uint   `json:"exp"`
 	jwt.RegisteredClaims
 }
 
@@ -43,6 +44,10 @@ func ParseToken(tokenString string) (interface{}, error) {
 	claims, ok := token.Claims.(*CustomClaims)
 	if !ok {
 		return nil, fmt.Errorf("could not parse claims")
+	}
+
+	if claims.Exp < uint(time.Now().Unix()) {
+		return nil, fmt.Errorf("token expired")
 	}
 
 	return claims, nil

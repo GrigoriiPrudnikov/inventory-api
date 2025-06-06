@@ -21,6 +21,7 @@ func SetupRoutes() {
 	r.GET("/items", handlers.GetItems)
 	r.GET("/items/:id", handlers.GetItem)
 	r.POST("/items", handlers.CreateItem)
+	r.GET("/items/sell/:id", handlers.SellItem)
 
 	r.Run(":8080")
 }
